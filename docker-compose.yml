@@ -84,7 +84,7 @@ services:
       - with_prometheus
 
   grafana:
-    image: "grafana/${GRAFANA_IMAGE:-grafana:latest}"
+    image: "${GRAFANA_IMAGE:-grafana/grafana:latest}"
     restart: always
     ports:
       - "3000:3000"
