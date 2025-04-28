@@ -16,7 +16,7 @@ x-environment: &oncall-environment
 
 services:
   engine:
-    image: grafana/oncall
+    image: grafana/oncall:local
     restart: always
     ports:
       - "8080:8080"
@@ -31,7 +31,7 @@ services:
         condition: service_healthy
 
   celery:
-    image: grafana/oncall
+    image: grafana/oncall:local
     restart: always
     command: sh -c "./celery_with_exporter.sh"
     environment: *oncall-environment
@@ -44,7 +44,7 @@ services:
         condition: service_healthy
 
   oncall_db_migration:
-    image: grafana/oncall
+    image: grafana/oncall:local
     command: python manage.py migrate --noinput
     environment: *oncall-environment
     volumes:

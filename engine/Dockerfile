@@ -1,4 +1,8 @@
-FROM python:3.12.10-alpine3.21 AS base
+#FROM python:3.12.10-alpine3.21 AS base
+# DS: newer image breaks grpcio build 
+FROM python:3.12.6-alpine3.20 as base
+
+
 ARG TARGETPLATFORM
 
 # Create a group and user to run an app
@@ -18,14 +22,17 @@ RUN apk add bash \
 
 WORKDIR /etc/app
 COPY ./requirements.txt ./
-COPY ./grpcio-1.64.1-cp312-cp312-linux_aarch64.whl ./
 
-# grpcio is not available for arm64 on pypi, so we need to install it from a local wheel
-# this can be removed once https://github.com/grpc/grpc/issues/34998 is resolved
-RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
-    pip install grpcio-1.64.1-cp312-cp312-linux_aarch64.whl  \
-    && rm grpcio-1.64.1-cp312-cp312-linux_aarch64.whl; \
-    fi
+## DS: commenting this out will trigger source build
+
+# COPY ./grpcio-1.64.1-cp312-cp312-linux_aarch64.whl ./
+
+# # grpcio is not available for arm64 on pypi, so we need to install it from a local wheel
+# # this can be removed once https://github.com/grpc/grpc/issues/34998 is resolved
+# RUN if [ "$TARGETPLATFORM" = "linux/arm64" ]; then \
+#     pip install grpcio-1.64.1-cp312-cp312-linux_aarch64.whl  \
+#     && rm grpcio-1.64.1-cp312-cp312-linux_aarch64.whl; \
+#     fi
 
 RUN pip install uv setuptools
 
